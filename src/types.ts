@@ -21,11 +21,15 @@ export type PocketDraft = {
   releaseAmount: string;
   frequency: string;
   startDate: string;
+  releaseTime: string;
+  fundingSource: 'unfunded' | 'wallet';
 };
 
 export type PocketStatus = 'awaiting_funding' | 'active' | 'paused' | 'completed';
 
 export type ReleaseStatus = 'scheduled' | 'pending' | 'success' | 'failed';
+
+export type KycStatus = 'not_started' | 'pending' | 'verified' | 'rejected';
 
 export type PocketRelease = {
   id: string;
@@ -41,6 +45,7 @@ export type PocketSchedule = {
   releaseCount: number;
   durationLabel: string;
   startDate: string;
+  releaseTime: string;
   nextReleaseAt: string | null;
   destinationLabel: string;
 };

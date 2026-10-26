@@ -1,5 +1,5 @@
 import type { Pocket, PocketDraft } from '../types';
-import { dateKeyToISO, toDateKey } from '../utils/date';
+import { dateAndTimeToISO, toDateKey } from '../utils/date';
 import { getDraftSchedule } from '../utils/schedule';
 
 const atFutureDay = (daysFromNow: number, hour = 8) => {
@@ -26,6 +26,7 @@ export const initialPockets: Pocket[] = [
       releaseCount: 30,
       durationLabel: '30 days',
       startDate: toDateKey(new Date(atFutureDay(1))),
+      releaseTime: '08:00',
       nextReleaseAt: atFutureDay(1),
       destinationLabel: 'Bank •••• 1234',
     },
@@ -50,6 +51,7 @@ export const initialPockets: Pocket[] = [
       releaseCount: 20,
       durationLabel: '4 weeks',
       startDate: toDateKey(new Date(atFutureDay(1, 7))),
+      releaseTime: '07:00',
       nextReleaseAt: atFutureDay(1, 7),
       destinationLabel: 'Bank •••• 1234',
     },
@@ -73,6 +75,7 @@ export const initialPockets: Pocket[] = [
       releaseCount: 1,
       durationLabel: '1 month',
       startDate: toDateKey(new Date(atFutureDay(1, 9))),
+      releaseTime: '09:00',
       nextReleaseAt: atFutureDay(1, 9),
       destinationLabel: 'Bank •••• 1234',
     },
@@ -82,6 +85,7 @@ export const initialPockets: Pocket[] = [
 
 export function pocketFromDraft(draft: PocketDraft): Pocket {
   const { targetAmountKobo, releaseAmountKobo, releaseCount, durationLabel } = getDraftSchedule(draft);
+  const fundedFromWallet = draft.fundingSource === 'wallet';
   const idBase = (draft.name || draft.category || 'pocket')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
@@ -92,9 +96,9 @@ export function pocketFromDraft(draft: PocketDraft): Pocket {
     name: draft.name.trim() || `${draft.category} Pocket`,
     category: draft.category || 'Others',
     currency: 'NGN',
-    status: 'awaiting_funding',
+    status: fundedFromWallet ? 'active' : 'awaiting_funding',
     targetAmountKobo,
-    protectedAmountKobo: 0,
+    protectedAmountKobo: fundedFromWallet ? targetAmountKobo : 0,
     releasedAmountKobo: 0,
     createdAt: new Date().toISOString(),
     schedule: {
@@ -103,7 +107,8 @@ export function pocketFromDraft(draft: PocketDraft): Pocket {
       releaseCount,
       durationLabel,
       startDate: draft.startDate,
-      nextReleaseAt: dateKeyToISO(draft.startDate),
+      releaseTime: draft.releaseTime,
+      nextReleaseAt: dateAndTimeToISO(draft.startDate, draft.releaseTime),
       destinationLabel: 'Bank •••• 1234',
     },
     releases: [],

@@ -1,5 +1,7 @@
 import { ProfileScreen } from '@/screens/ProfileScreen';
+import { useUser } from '@/context/UserContext';
 
 export default function ProfileRoute() {
-  return <ProfileScreen />;
+  const { isKycVerified } = useUser();
+  return <ProfileScreen kycVerified={isKycVerified} />;
 }

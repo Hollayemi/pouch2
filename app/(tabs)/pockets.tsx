@@ -9,7 +9,7 @@ export default function PocketsRoute() {
   const { pockets } = usePockets();
   const createPocket = () => {
     resetDraft();
-    router.push('/pockets/create/category');
+    router.push('/pockets/create');
   };
   return <PocketsScreen pockets={pockets} onCreate={createPocket} onOpenPocket={(id) => router.push({ pathname: '/pockets/[id]', params: { id } })} />;
 }

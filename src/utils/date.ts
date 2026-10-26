@@ -48,3 +48,17 @@ export function dateKeyToISO(value: string, hour = 8) {
   date.setHours(hour, 0, 0, 0);
   return date.toISOString();
 }
+
+export function dateAndTimeToISO(dateValue: string, timeValue: string) {
+  const date = dateKeyToDate(dateValue);
+  const [hour, minute] = timeValue.split(':').map(Number);
+  date.setHours(hour, minute, 0, 0);
+  return date.toISOString();
+}
+
+export function formatTimeKey(value: string) {
+  const [hourValue, minute = '00'] = value.split(':');
+  const hour = Number(hourValue);
+  const displayHour = hour % 12 || 12;
+  return `${displayHour}:${minute} ${hour >= 12 ? 'PM' : 'AM'}`;
+}
